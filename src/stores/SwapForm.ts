@@ -11,12 +11,6 @@ import { BigNumber } from 'utils/bignumber';
 import { bnum, scale, str, isEmpty } from '../utils/helpers';
 import { TokenMetadata } from './Token';
 
-export enum InputFocus {
-    NONE,
-    BUY,
-    SELL,
-}
-
 export enum SwapMethods {
     EXACT_IN = 'swapExactIn',
     EXACT_OUT = 'swapExactOut',
@@ -64,7 +58,6 @@ export default class SwapFormStore {
         outputLimit: '0',
         inputLimit: '0',
         limitPrice: '0',
-        focus: 0,
         swaps: [],
     };
     @observable inputToken: TokenMetadata;
@@ -180,10 +173,6 @@ export default class SwapFormStore {
         } else {
             this.inputs.swapMethod = SwapMethods.EXACT_IN;
         }
-    }
-
-    @action setInputFocus(element: InputFocus) {
-        this.inputs.focus = element;
     }
 
     @action setSwapObjection(message: string) {
@@ -415,7 +404,6 @@ export default class SwapFormStore {
             this.inputs.inputAmount,
         ];
         this.switchSwapMethod();
-        this.setInputFocus(InputFocus.NONE);
     }
 
     @action clearInputs() {

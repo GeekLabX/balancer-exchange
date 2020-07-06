@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { isAddress } from '../utils/helpers';
 import { EtherKey } from '../stores/Token';
@@ -164,61 +164,24 @@ const MaxLink = styled.div`
 
 const Token = observer(
     ({
-        defaultValue,
+        value,
         onChange,
         updateSwapFormData,
-        inputID,
         inputName,
         headerText,
         tokenName,
         tokenBalance,
         truncatedTokenBalance,
         tokenAddress,
-        setFocus,
         errorMessage,
         showMax,
     }) => {
-        const textInput = useRef(null);
         const {
             root: { swapFormStore },
         } = useStores();
 
-        useEffect(() => {
-            if (setFocus) {
-                textInput.current.focus();
-            }
-        });
-
         const modalType =
             inputName === 'inputAmount' ? ModalType.INPUT : ModalType.OUTPUT;
-
-        const InputContainer = ({ errorMessage }) => {
-            // TODO make sure conditional is checking the correct thing
-            const errorBorders = errorMessage === '' ? false : true;
-            return (
-                <InputWrapper errorBorders={errorBorders}>
-                    <input
-                        id={inputID}
-                        name={inputName}
-                        defaultValue={defaultValue}
-                        onChange={onChange}
-                        ref={textInput}
-                        placeholder="0"
-                    />
-                    {(tokenAddress === EtherKey &&
-                        modalType === ModalType.INPUT) ||
-                    !showMax ? (
-                        <div />
-                    ) : (
-                        <MaxLink
-                            onClick={() => updateSwapFormData(tokenBalance)}
-                        >
-                            Max
-                        </MaxLink>
-                    )}
-                </InputWrapper>
-            );
-        };
 
         const IconError = e => {
             e.target.src = './empty-token.png';
@@ -245,7 +208,20 @@ const Token = observer(
                         {truncatedTokenBalance} {tokenName}
                     </TokenBalance>
                 </TokenContainer>
-                <InputContainer errorMessage={errorMessage} />
+                <InputWrapper errorBorders={errorMessage !== ''}>
+                    <input value={value} onChange={onChange} placeholder="0" />
+                    {(tokenAddress === EtherKey &&
+                        modalType === ModalType.INPUT) ||
+                    !showMax ? (
+                        <div />
+                    ) : (
+                        <MaxLink
+                            onClick={() => updateSwapFormData(tokenBalance)}
+                        >
+                            Max
+                        </MaxLink>
+                    )}
+                </InputWrapper>
             </Panel>
         );
     }
